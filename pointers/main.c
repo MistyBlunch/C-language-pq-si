@@ -1,20 +1,11 @@
 #include <stdio.h>
 
-// int* puntero a entero
-void swap(int* a, int* b) {
-  int tmp = *b;
-  *b = *a;
-  *a = tmp;
-}
-
 int main() {
-  int a = 0;
-  int b = 0;
+  char a[3] = {7,8,5};
 
-  scanf("%d", &a);
-  scanf("%d", &b);
+  *(a + 0) = 0;
+  *(a + 1) = 0;
+  *(a + 2) = 0;
 
-  swap(&a, &b);
-
-  printf("a = %d, b = %d\n", a, b);
+  printf("%d %d %d\n", *a, *(a+1),*(a+2));
 }
