@@ -21,22 +21,22 @@ int es_vacia(lista list) {
 }
 
 // Tiempo constante
-lista agregar(lista list, int value) {
-  if(es_vacia(list)) {
+void agregar(lista* list, int value) {
+  if(es_vacia(*list)) {
     node* n = malloc(sizeof(node));
     // (*n).value = value;
     n->value = value;
     n->next = NULL;
     n->longitud = 1;
 
-    return n;
+    *list = n;
   } else {
     node* n = malloc(sizeof(node));
-    n->longitud = list->longitud + 1;
+    n->longitud = (*list)->longitud + 1;
     n->value = value;
-    n->next = list;
+    n->next = *list;
 
-    return n;
+    *list = n;
   }
 }
 
@@ -142,28 +142,75 @@ int lower(int x, int y) {
   return x < y;
 }
 
+void concatenar(lista list1, lista list2) {
+  for(; !es_vacia(list1->next); list1=list1->next);
+  list1->next = list2;
+}
+
+void eliminar(lista* list, int index) {
+  if(es_vacia(*list)) return;
+  if(index == 0) {
+    lista li = *list;
+    *list = (*list)->next;
+    free(li);
+    return;
+  } else {
+    return eliminar(&((*list)->next), index-1);
+  }
+}
+
+void borrar(lista* list) {
+  if(es_vacia(*list)) return;
+  else {
+    eliminar(list, 0);
+    borrar(list);
+  }
+}
 
 int main() {
   printf("Ingresa las ventas, escribe 0 si deseas parar el programa: \n");
 
-  lista l = vacia(); // l : NULL
+  lista l1 = vacia(); // l : NULL
+  lista l2 = vacia();
+  lista l3 = vacia();
   int numero;
 
   do {
     scanf("%d", &numero);
     if(numero != 0)
-      l = agregar(l, numero); // l : struct->value = 2
+      agregar(&l1, numero); // l : struct->value = 2
   } while(numero != 0);
 
-  printf("\n%d\n", longitud(l));
+  agregar(&l2, 7);
+  agregar(&l2, 2);
+  agregar(&l2, 3);
 
-  int mayor_v = extremo(l, greater);
-  int menor_v = extremo(l, lower);
+  agregar(&l3, 9);
+  agregar(&l3, 4);
+  agregar(&l3, 2);
 
-  printf("La venta mayor es: %d \n", mayor_v);
-  printf("La venta menor es: %d \n", menor_v);
+  concatenar(l1, l2);
+  concatenar(l1, l3);
+
+  mostrar(l1);
+
+  eliminar(&l1, 3);
+
+  // printf("\n%d\n", longitud(l));
+
+  // int mayor_v = extremo(l, greater);
+  // int menor_v = extremo(l, lower);
+
+  // printf("La venta mayor es: %d \n", mayor_v);
+  // printf("La venta menor es: %d \n", menor_v);
 
   printf("\n");
-  mostrar(l);
-  printf("\n%d", len(l));
+  mostrar(l1);
+
+  borrar(&l1);
+
+  printf("\n");
+  mostrar(l1);
+
+  printf("\n%d", len(l1));
 }
